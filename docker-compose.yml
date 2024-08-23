@@ -1,0 +1,9 @@
+services:
+  php-apache:
+    build: .
+    container_name: php-apache-container
+    ports:
+      - "8081:80"
+    volumes:
+      - .:/var/www/html
+    restart: unless-stopped
