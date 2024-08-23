@@ -1,7 +1,58 @@
 <?php
 define("host", getURL());
 define("uploadDir", "uploads/");
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['zip_file'])) {
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'generate') {
+    // Retrieve folder name and other parameters from URL
+    $folderName = $_GET['name'] ?? 'default'; // Use 'default' if name is not provided
+    $gameVersion = $_GET['game_version'] ?? '1.0'; // Default game version if not provided
+    $loader = $_GET['mod_loader'] ?? 'forge'; // Default mod loader if not provided
+    $loaderVersion = $_GET['loader_version'] ?? '1.0'; // Default loader version if not provided
+
+    $extractDir = uploadDir . $folderName . '/';
+
+    if (is_dir($extractDir)) {
+        // Generate the files.json and manifest.json from the existing directory
+        $filesList = dirToArray($extractDir);
+        $modpackInfo = [
+            "name" => $folderName,
+            "game_version" => $gameVersion,
+            "loader" => $loader,
+            "loader_version" => $loaderVersion,
+            "files" => host . "/" . uploadDir . $folderName . "/manifest.json"
+        ];
+
+        // Save the JSON object to a file
+        file_put_contents($extractDir . 'files.json', json_encode($filesList, JSON_PRETTY_PRINT));
+        file_put_contents($extractDir . 'manifest.json', json_encode($modpackInfo, JSON_PRETTY_PRINT));
+
+        echo 'Assets generated and JSON files created successfully!';
+    } else {
+        echo 'Directory does not exist!';
+    }
+} else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'list') {
+    header('Content-Type: application/json');
+
+    $uploadsDir = 'uploads'; // Directory containing the extracted folders
+    $folders = scanFolder($uploadsDir);
+    $allContents = [];
+
+    foreach ($folders as $folder) {
+        $manifestFilePath = "$uploadsDir/$folder/manifest.json";
+        $fileListPath = host . "/" . "$uploadsDir/$folder/files.json";
+
+        if (file_exists($manifestFilePath)) {
+            $fileContents = file_get_contents($manifestFilePath);
+            $data = json_decode($fileContents, true);
+            $data['files'] = $fileListPath;
+            array_push($allContents, $data);
+        }
+    }
+
+    echo json_encode($allContents);
+    exit;
+} else if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['zip_file'])) {
     $zipFile = $_FILES['zip_file']['tmp_name'];
     $folderName = $_POST['folder_name'];
     $gameVersion = $_POST['game_version'];
@@ -37,8 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['zip_file'])) {
     } else {
         echo 'Failed to extract zip file!';
     }
-}
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'list') {
+} else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'list') {
     header('Content-Type: application/json');
 
     $uploadsDir = 'uploads'; // Directory containing the extracted folders
@@ -58,6 +108,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
     }
 
     echo json_encode($allContents);
+    exit;
+} else {
+    echo 'Invalid request!';
     exit;
 }
 
