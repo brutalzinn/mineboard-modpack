@@ -19,6 +19,8 @@ A Minecraft-inspired modpack manager API designed to work with [BertobrLauncher]
 
 This project is a modpack manager API for Minecraft, designed to be used with [BertobrLauncher](https://github.com/brutalzinn/bertobrlauncher). It allows you to create, manage, and version modpacks through a web interface.
 
+You need to config a token to access this panel at app/config.php
+
 ## Prerequisites
 
 To run this project, you need to have Docker and Docker Compose installed on your machine.
@@ -70,7 +72,7 @@ To start the project using Docker Compose, follow these steps:
 
 2. **Access the API**:
 
-    Once the containers are up and running, you can access the API by navigating to [http://localhost:3000](http://localhost:3000) in your web browser.
+    Once the containers are up and running, you can access the API by navigating to [http://localhost:3000?token=yourtoken](http://localhost:3000?token=yourtoken) in your web browser.
 
 ## Stopping the Project
 
@@ -82,8 +84,10 @@ docker-compose down
 
 ## Screens 
 
-<img src="docs/home.png">
+1. <img src="docs/home.png">
+2. <img src="docs/edit.png">
 
-<img src="docs/edit.png">
+
+
 
 
