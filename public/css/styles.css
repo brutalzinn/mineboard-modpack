@@ -2,12 +2,10 @@ body {
     font-family: 'Press Start 2P', sans-serif;
     background-color: #3B5323;
     margin: 0;
-    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
 }
 
 h1 {
