@@ -41,6 +41,14 @@ label {
     color: #FFF;
 }
 
+h2 {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: #FFF;
+}
+
+
 input[type="text"],
 input[type="file"],
 select {

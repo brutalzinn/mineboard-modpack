@@ -13,7 +13,7 @@ A Minecraft-inspired modpack manager API designed to work with [BertobrLauncher]
   - [Setup](#setup)
   - [Running the Project](#running-the-project)
   - [Stopping the Project](#stopping-the-project)
-  - [Home](#home)
+  - [Screens](#screens)
 
 ## Introduction
 
@@ -80,10 +80,10 @@ To stop the running Docker containers, press `Ctrl + C` in the terminal where `d
 docker-compose down
 ```
 
-## Home 
+## Screens 
 
-<img src="docs/image.png" width="500" height="500">
+<img src="docs/home.png">
 
-
+<img src="docs/edit.png">
 
 
