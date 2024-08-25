@@ -7,17 +7,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         case 'regenerate':
             $id = $_POST['id'];
             $modpack = getModPackById($id);
-            $folderName = sanitizeName($modpack["name"]);
-            $extractDir = UPLOAD_DIR . $folderName . '/';
-            if (is_dir($extractDir)) {
-                $filesList = dirToArray($extractDir);
-                generateManifest(dir: $extractDir, name: $name, gameVersion: $gameVersion, loader: $loader, loaderVersion: $loaderVersion, id: $id);
-                generateFiles($extractDir, $filesList);
-                echo "Package regenerated successfully!";
-            } else {
-                echo "Directory does not exist.";
+            $name = $_POST['name'] ?? 'default';
+            $gameVersion = $_POST['game_version'];
+            $loader = $_POST['mod_loader'];
+            $loaderVersion = $_POST['loader_version'];
+            $extractDir = isset($modpack["dir"]) ?  $modpack["dir"] . '/' : UPLOAD_DIR . sanitizeName($name) . '/';
+            $zipFile = $_FILES['zip_file']['tmp_name'];
+            if (isset($zipFile) && !empty($zipFile)) {
+                if (!is_dir($extractDir)) {
+                    mkdir($extractDir, 0777, true);
+                } else {
+                    deleteDirectory($extractDir);
+                }
+                $zip = new ZipArchive;
+                if ($zip->open($zipFile) === TRUE) {
+                    $zip->extractTo($extractDir);
+                    $zip->close();
+                    echo 'Zip file extracted and JSON file created successfully!';
+                } else {
+                    echo 'Failed to extract zip file!';
+                }
             }
-            break;
+
+            $filesList = dirToArray($extractDir);
+            generateManifest(dir: $extractDir, name: $name, gameVersion: $gameVersion, loader: $loader, loaderVersion: $loaderVersion, id: $id);
+            generateFiles($extractDir, $filesList);
+            echo "Package regenerated successfully!";
+            exit;
 
         case 'upload':
             $id = guidv4();
@@ -33,34 +49,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             } else {
                 deleteDirectory($extractDir);
             }
-
-            $zip = new ZipArchive;
-            if ($zip->open($zipFile) === TRUE) {
-                $zip->extractTo($extractDir);
-                $zip->close();
-
-                $filesList = dirToArray($extractDir);
-                $modpackInfo = [
-                    "id" => $id,
-                    "name" => $name,
-                    "game_version" => $gameVersion,
-                    "loader" => $loader,
-                    "loader_version" => $loaderVersion,
-                    "files" => HOST . "/" . UPLOAD_DIR . $folderName . "/manifest.json"
-                ];
-
-                // Save the JSON object to a file
-                file_put_contents($extractDir . 'files.json', json_encode($filesList, JSON_PRETTY_PRINT));
-                file_put_contents($extractDir . 'manifest.json', json_encode($modpackInfo, JSON_PRETTY_PRINT));
-
-                echo 'Zip file extracted and JSON file created successfully!';
-            } else {
-                echo 'Failed to extract zip file!';
+            if (isset($zipFile) && !empty($zipFile)) {
+                $zip = new ZipArchive;
+                if ($zip->open($zipFile) === TRUE) {
+                    $zip->extractTo($extractDir);
+                    $zip->close();
+                    $filesList = dirToArray($extractDir);
+                    generateManifest(dir: $extractDir, name: $name, gameVersion: $gameVersion, loader: $loader, loaderVersion: $loaderVersion, id: $id);
+                    generateFiles($extractDir, $filesList);
+                    echo 'Zip file extracted and JSON file created successfully!';
+                } else {
+                    echo 'Failed to extract zip file!';
+                }
             }
-
-
-
-            break;
+            echo "Modpack uploaded successfully!";
+            exit;
 
         case 'delete':
             // Handle deletion of a modpack
@@ -70,10 +73,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             } else {
                 echo "Directory does not exist.";
             }
-            break;
+            exit;
     }
-}
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
+} else if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
     header('Content-Type: application/json');
     switch ($_GET['action']) {
         case "list":
@@ -95,6 +97,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
             $id = $_GET['id'];
             $data = getModPackById($id);
             echo json_encode($data);
+            exit;
+    }
+} else if ($_SERVER['REQUEST_METHOD'] === 'DELETE' && isset($_GET['action'])) {
+    header('Content-Type: application/json');
+    switch ($_GET['action']) {
+        case "modpack":
+            $id = $_GET['id'];
+            $modpack = getModPackById($id);
+            $extractDir = UPLOAD_DIR . $modpack["dir"] . '/';
+            if (is_dir($extractDir)) {
+                deleteDirectory($extractDir);
+                echo "Modpack deleted successfully!";
+            } else {
+                echo "Directory does not exist.";
+            }
             exit;
     }
 }

@@ -37,6 +37,7 @@ function generateManifest($dir, $gameVersion, $name, $loader, $loaderVersion, $i
         'gameVersion' => $gameVersion,
         'loader' => $loader,
         'loaderVersion' => $loaderVersion,
+        "dir" => $dir,
         'files' => HOST . "/" . "$dir/files.json"
     ];
     file_put_contents($dir . 'manifest.json', json_encode($manifest, JSON_PRETTY_PRINT));

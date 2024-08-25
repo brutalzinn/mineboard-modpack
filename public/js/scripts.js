@@ -1,22 +1,26 @@
 function showEditForm(modpack) {
     document.getElementById('id').value = modpack.id;
     document.getElementById('name').value = modpack.name;
-    document.getElementById('game_version').value = modpack.game_version;
+    document.getElementById('game_version').value = modpack.gameVersion;
     document.getElementById('mod_loader').value = modpack.loader;
-    document.getElementById('loader_version').value = modpack.loader_version;
+    document.getElementById('loader_version').value = modpack.loaderVersion;
+    document.getElementById('regenerateBtn').classList.remove('hidden');
     showForm("Edit Modpack");
 }
 
-function showForm(modpack) {
-    document.getElementById('form')
-    showForm("Create Modpack")
+function hideModpackList() {
+    document.getElementById('modpacks-list').classList.add('hidden');
 }
-
+function showModpackList() {
+    document.getElementById('modpacks-list').classList.remove('hidden');
+}
 function hideForm() {
     document.getElementById('form').classList.add('hidden');
+    showModpackList();
 }
 
 function showForm(title = 'Create Modpack') {
+    hideModpackList();
     document.getElementById('form').classList.remove('hidden');
     document.getElementById('form-title').textContent = title;
 }
@@ -46,9 +50,9 @@ function fetchModpacks() {
                 const div = document.createElement('div');
                 div.innerHTML = `
             <h3>${modpack.name}</h3>
-            <p>Game Version: ${modpack.game_version}</p>
+            <p>Game Version: ${modpack.gameVersion}</p>
             <p>Mod Loader: ${modpack.loader}</p>
-            <p>Loader Version: ${modpack.loader_version}</p>
+            <p>Loader Version: ${modpack.loaderVersion}</p>
             <p>Files: <a href="${modpack.files}" target="_blank">View</a></p>
             <button onclick="fetchModpack('${modpack.id}')">Edit</button>
             <button class="danger-button" onclick="deleteModpack('${modpack.id}')">Delete</button>`;
@@ -60,10 +64,10 @@ function fetchModpacks() {
         });
 }
 
-function deleteModpack(name) {
-    if (confirm(`Are you sure you want to delete the modpack '${name}'?`)) {
-        fetch(`/?action=delete&name=${name}`, {
-            method: 'GET'
+function deleteModpack(id) {
+    if (confirm(`Are you sure you want to delete the modpack '${id}'?`)) {
+        fetch(`/?action=modpack&id=${id}`, {
+            method: 'DELETE'
         })
             .then(response => response.text())
             .then(text => {

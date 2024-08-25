@@ -12,6 +12,7 @@ if ($token !== KEY) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Minecraft Modpack Upload</title>
@@ -19,12 +20,15 @@ if ($token !== KEY) {
     <script src="public/js/scripts.js" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <h1>Minecraft Modpack Manager</h1>
+    <button type="button" style="width: 300px;" onclick="showForm()">Create</button>
+
     <div id="modpacks-list">
         <h2>Modpacks List</h2>
     </div>
-    <button type="button" onclick="showForm()">Create</button>
+
     <div id="form" class="hidden">
         <h2 id="form-title"></h2>
         <form method="post" enctype="multipart/form-data">
@@ -56,12 +60,13 @@ if ($token !== KEY) {
             </div>
             <div>
                 <label for="zip_file">Upload Zip File:</label>
-                <input type="file" name="zip_file" id="zip_file" required>
+                <input type="file" name="zip_file" id="zip_file">
             </div>
             <button type="submit" onclick="setAction('upload')">Upload</button>
-            <button type="submit" onclick="setAction('regenerate')">Regenerate</button>
+            <button type="submit" id="regenerateBtn" class="hidden" onclick="setAction('regenerate')">Regenerate</button>
             <button type="button" onclick="hideForm()">Cancel</button>
         </form>
     </div>
 </body>
+
 </html>
