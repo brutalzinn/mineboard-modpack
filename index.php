@@ -32,13 +32,12 @@ if ($token !== KEY) {
     <div id="form" class="hidden">
         <h2 id="form-title"></h2>
         <form method="post" enctype="multipart/form-data">
-            <input type="hidden" name="action" id="editAction" value="upload">
+            <input type="hidden" name="action" id="editAction" value="generate">
             <input type="hidden" name="id" id="id">
             <div class="progress-bar">
                 <div class="progress-bar-fill"></div>
             </div>
             <div class="status"></div>
-
             <div>
                 <label for="name">Name:</label>
                 <input type="text" name="name" id="name" placeholder="Boberto modpack"><br><br>
@@ -50,21 +49,22 @@ if ($token !== KEY) {
             <div>
                 <label for="mod_loader">Mod Loader:</label>
                 <select name="mod_loader" id="mod_loader" required>
-                    <option value="forge">Forge</option>
+                    <option value="" disabled>select option</option>
                     <option value="fabric">Fabric</option>
+                    <option value="forge">Forge</option>
                 </select>
             </div>
             <div>
                 <label for="loader_version">Loader Version:</label>
-                <input type="text" name="loader_version" id="loader_version" required>
+                <input type="text" name="loader_version" id="loader_version" value="latest" required>
             </div>
             <div>
                 <label for="zip_file">Upload Zip File:</label>
                 <input type="file" name="zip_file" id="zip_file">
             </div>
-            <button type="submit" onclick="setAction('upload')">Upload</button>
-            <button type="submit" id="regenerateBtn" class="hidden" onclick="setAction('regenerate')">Regenerate</button>
+            <button type="submit" onclick="setAction('generate')">Generate</button>
             <button type="button" onclick="hideForm()">Cancel</button>
+            <p>Warning: This will delete the existing modpack files and create a new one.</p>
         </form>
     </div>
 </body>

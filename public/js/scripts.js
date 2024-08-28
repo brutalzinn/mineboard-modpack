@@ -1,11 +1,14 @@
 function showEditForm(modpack) {
+    hideModpackList();
     document.getElementById('id').value = modpack.id;
     document.getElementById('name').value = modpack.name;
     document.getElementById('game_version').value = modpack.gameVersion;
     document.getElementById('mod_loader').value = modpack.loader;
     document.getElementById('loader_version').value = modpack.loaderVersion;
-    document.getElementById('regenerateBtn').classList.remove('hidden');
-    showForm("Edit Modpack");
+    document.getElementById('zip_file').value = "";
+
+    document.getElementById('form').classList.remove('hidden');
+    document.getElementById('form-title').textContent = "Edit Modpack";
 }
 
 function hideModpackList() {
@@ -19,10 +22,12 @@ function hideForm() {
     showModpackList();
 }
 
-function showForm(title = 'Create Modpack') {
+function showForm() {
     hideModpackList();
+    document.getElementById('id').value = "";
+    document.getElementById('zip_file').value = "";
     document.getElementById('form').classList.remove('hidden');
-    document.getElementById('form-title').textContent = title;
+    document.getElementById('form-title').textContent = "Create Modpack";
 }
 
 function setAction(action) {
