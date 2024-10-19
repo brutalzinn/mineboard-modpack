@@ -27,7 +27,7 @@ To run this project, you need to have Docker and Docker Compose installed on you
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/your-username/minecraft-modpack-manager.git
+    git clone https://github.com/brutalzinn/minecraft-modpack-manager.git
     cd minecraft-modpack-manager
     ```
 
